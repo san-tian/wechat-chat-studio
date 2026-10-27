@@ -1,0 +1,103 @@
+/* Native 1125 px layout. Preview scales the DOM; export captures it at its native
+   size before rasterization, never from the scaled preview or an existing bitmap. */
+#chat-preview{width:1125px;transform-origin:0 0;transform:scale(var(--chat-preview-scale,.266666667));cursor:pointer}
+.chat-screen,.chat-screen *,.chat-screen *::before,.chat-screen *::after{box-sizing:border-box;margin:0;padding:0}
+.chat-screen{position:relative;display:flex;flex-direction:column;width:1125px;height:2436px;overflow:hidden;background:var(--chat-bg,#ededed);color:#111;font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:48px;font-weight:400;font-style:normal;line-height:1.5;letter-spacing:normal;text-align:left;text-rendering:auto;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;text-size-adjust:100%;font-synthesis:none}
+.chat-screen svg{display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;vertical-align:middle}
+.chat-screen img{display:block;max-width:100%}
+.chat-top{position:relative;z-index:1;flex:none;background:var(--chat-bg,#ededed);border-bottom:1px solid #d5d5d5}
+.chat-status{display:flex;align-items:center;height:132px;padding:0 43px 0 95px}
+.chat-clock{flex:1;font-size:45px;font-weight:600;letter-spacing:1px;line-height:1.5}
+.chat-status-icons{display:flex;align-items:center;gap:18px;height:36px}
+.chat-signal{display:flex;align-items:flex-end;gap:4px;height:34px}
+.chat-signal i{display:block;width:9px;border-radius:3px;background:#111}
+.chat-wifi{width:47px;height:36px}
+.chat-battery{width:72px;height:34px;border:3px solid #888;border-radius:8px;padding:4px;position:relative}
+.chat-battery:after{content:"";position:absolute;right:-8px;top:8px;width:4px;height:12px;background:#999;border-radius:2px}
+.chat-battery i{display:block;height:100%;border-radius:3px;background:#111}
+.chat-nav{display:flex;align-items:center;height:131px;padding:0 50px}
+.chat-nav-left,.chat-nav-right{width:150px;display:flex;flex-shrink:0;align-items:center}
+.chat-nav-left svg{width:30px;height:66px;stroke-width:2.5}
+.chat-nav-center{flex:1;min-width:0;display:flex;justify-content:center;align-items:center;text-align:center;font-size:51px;font-weight:600;line-height:1.5;white-space:nowrap;overflow:hidden}
+.chat-nav-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-member-count{flex:none}
+.chat-nav-right{justify-content:flex-end;gap:12px}
+.chat-nav-right i{width:12px;height:12px;border-radius:50%;background:#111}
+.chat-body{flex:1;min-height:0;overflow:hidden}
+.chat-content{padding:36px;display:flow-root}
+.chat-row{position:relative;display:flex;margin-bottom:50px;min-height:123px}
+.chat-row.is-self{justify-content:flex-end}
+.chat-face{position:absolute;top:0;left:0;width:123px;height:123px;object-fit:cover;border-radius:15px;background:#f1f1f1}
+.chat-row.is-self .chat-face{left:auto;right:0}
+.chat-message-body{display:flex;flex-direction:column;align-items:flex-start;max-width:calc(100% - 340px);margin-left:160px;margin-right:140px;min-width:0}
+.chat-row.is-self .chat-message-body{align-items:flex-end;margin-left:140px;margin-right:160px}
+.chat-nickname{color:#999;font-size:33px;line-height:1;margin-bottom:10px;padding-left:6px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-bubble{position:relative;display:inline-block;min-height:80px;max-width:100%;padding:28px 38px;border-radius:15px;background:var(--other-bubble,#fff);font-size:var(--chat-font-size,48px);font-weight:400;line-height:1.4;word-break:break-all;white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-text-bubble{padding-left:var(--chat-text-inset,36px);padding-right:var(--chat-text-inset,36px)}
+.chat-chain-heading{color:#576b95;font:inherit;text-decoration:none}
+.chat-chain-body{color:#111;font:inherit;text-decoration:none}
+.chat-row.is-self .chat-bubble{background:var(--self-bubble,#95ec69)}
+.chat-arrow{position:absolute;width:24px;height:24px;top:50px;left:-12px;transform:rotate(45deg);border-bottom-left-radius:4px;background:inherit}
+.chat-row.is-self .chat-arrow{left:auto;right:-10px;border-bottom-left-radius:0;border-top-right-radius:4px}
+.chat-notice{display:flex;justify-content:center;color:#b0b0b0;font-size:36px;line-height:1.5;margin-bottom:50px;text-align:center;white-space:pre-wrap;word-break:break-word}
+.chat-notice span{padding:10px 17px}
+.chat-image-bubble{padding:0!important;min-height:0;overflow:hidden;border:1px solid #d5d5d5;background:transparent!important}
+.chat-image-bubble img{max-width:420px;max-height:420px;width:auto;height:auto;object-fit:contain;border-radius:14px}
+.chat-image-placeholder{display:flex;align-items:center;justify-content:center;width:420px;height:300px;color:#84917b;background:#dde2d8;font-size:36px}
+.chat-voice{display:flex;align-items:center;justify-content:space-between;max-width:100%;padding-top:25px;padding-bottom:25px}
+.chat-voice svg{width:34px;height:49px;stroke-width:2}
+.chat-voice .voice-duration{font-size:42px;line-height:1.4;white-space:nowrap;padding:0 12px}
+.chat-money{width:700px;max-width:100%;min-height:0!important;padding:0!important;background:#f79c46!important}
+.chat-money-main{display:flex;align-items:center;height:192px;padding:0 30px;border-bottom:1px solid #f0b36f}
+.chat-money-symbol{display:flex;align-items:center;justify-content:center;width:120px;height:120px;color:#fff1d9;flex-shrink:0}
+.chat-money-symbol svg{width:100px;height:100px}
+.chat-money-info{flex:1;min-width:0;margin-left:30px;display:flex;flex-direction:column;color:#fff;line-height:1.5}
+.chat-money-info span{font-size:48px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.chat-money-info small{font-size:36px;opacity:.85;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.chat-money-bottom{display:flex;align-items:center;height:71px;padding:0 30px;font-size:36px;color:#faecda}
+.chat-bottom{flex:none;height:269px;background:#f6f6f6}
+.chat-bottom-controls{height:170px;border-top:1px solid #e0e0e0;display:flex;align-items:center;gap:18px;padding:0 24px}
+.chat-bottom-icon{width:78px;height:78px;display:flex;justify-content:center;align-items:center;flex:none}
+.chat-bottom-icon svg{width:72px;height:72px;stroke-width:1.5}
+.chat-input-box{flex:1;height:108px;border-radius:16px;background:#fff}
+.chat-home{height:99px;position:relative;display:flex;justify-content:center}
+.chat-home i{position:absolute;bottom:24px;width:402px;height:15px;background:#000;border-radius:10px}
+.chat-export-host{position:fixed;left:-30000px;top:0;width:1125px;pointer-events:none;z-index:-100}
+.chat-export-host .chat-screen{transform:none}
+.phone-shell{transition:height .1s}
+@media(prefers-reduced-motion:reduce){.phone-shell{transition:none}}
+
+.bubble-padding-label{margin-top:16px}
+
+/* Compact Android status layout and a separate iOS layout. All status symbols
+   are filled vectors, so their weight stays consistent in the PNG export. */
+.chat-status.status-android{height:96px;padding:0 36px;justify-content:space-between;gap:24px}
+.chat-status.status-ios{height:132px;padding:0 43px 0 95px;justify-content:space-between;gap:24px}
+.status-left{display:flex;align-items:center;gap:18px;min-width:0}
+.status-left .chat-clock{flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:255px;line-height:1;font-variant-numeric:tabular-nums}
+.status-android .chat-clock{font-size:39px;font-weight:500;letter-spacing:.2px}
+.status-ios .chat-clock{font-size:45px;font-weight:600;letter-spacing:.4px}
+.chat-status .chat-status-icons{height:auto;flex:none;align-items:center;gap:15px;line-height:1}
+.chat-status svg{fill:currentColor;stroke:none;display:block}
+.status-notifications{display:flex;align-items:center;gap:12px;flex:none}
+.status-notifications>span{display:flex;align-items:center;justify-content:center;width:36px;height:36px}
+.status-notifications .status-app-icon{width:36px;height:36px}
+.status-sim-group{display:flex;align-items:center;gap:8px}
+.chat-status .status-signal{width:42px;height:42px}
+.chat-status .status-wifi{width:54px;height:42px}
+.status-battery-group{display:flex;align-items:center;gap:8px}
+.chat-status .status-battery-icon{width:72px;height:36px}
+.status-battery-percent{font-size:33px;font-weight:500;line-height:1;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.status-battery-group.is-low .status-battery-fill{fill:#d84a3f}
+.status-network{font-size:30px;font-weight:500;line-height:1;letter-spacing:-.5px}
+.status-ios .status-battery-percent{font-size:30px}
+.status-notification-options{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.status-notification-options label{display:flex;align-items:center;gap:5px;border:1px solid #e1e8d9;border-radius:7px;padding:6px 8px;background:#fafcf7;font-size:11px;cursor:pointer}
+.status-notification-options svg{width:14px;height:14px;fill:currentColor;stroke:none}
+.status-notification-options input{margin:0}
+.status-notification-options.is-disabled{opacity:.45}
+.status-notification-options.is-disabled label{cursor:default}
+.status-control-row{margin-top:14px}
+.status-control-row>label{min-width:0}
+.status-control-row select{font-size:12px}
+.status-notification-title{margin-top:17px;font-size:12px;color:#687760}

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f8f5">
+  <meta name="description" content="编辑微信风格对话、上传头像并导出高清 PNG。聊天内容在你的浏览器中处理。">
+  <title>对话工坊 · 微信聊天图片生成器</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23c5f467'/%3E%3Cpath d='M16 17h32v24H30l-10 8v-8h-4z' fill='%23202b24'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="chat.css?v=8">
+  <link rel="stylesheet" href="avatars.css?v=7">
+  <link rel="stylesheet" href="time.css?v=7">
+  <link rel="stylesheet" href="chain.css?v=7">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="对话工坊首页"><span class="brand-icon" data-icon="chat"></span><strong>对话工坊</strong><span class="brand-en">CHAT STUDIO</span></a>
+    <div class="header-right"><span class="saved" id="save-status"><i></i> 已保存到本机</span><button class="button light" id="download-project" data-icon="folder">保存草稿</button><button class="button primary" id="export-top" data-icon="download">导出图片</button></div>
+  </header>
+  <main>
+    <div class="page-heading"><div><div class="eyebrow">把一段对话，变成一张图片</div><h1>微信聊天图片生成器<span class="pill">本地处理</span></h1><p>写下对话，调整细节，让每一条消息恰到好处。</p></div><button class="button light" id="load-project" data-icon="upload">导入草稿</button><input id="project-file" type="file" accept="application/json,.json" hidden></div>
+    <div class="workspace">
+      <section class="editor card" aria-label="聊天编辑器">
+        <nav class="tabs" aria-label="编辑分类"><button class="tab active" data-tab="messages" data-icon="chat">对话内容</button><button class="tab" data-tab="people" data-icon="users">人物头像</button><button class="tab" data-tab="settings" data-icon="sliders">画面设置</button></nav>
+        <div class="tab-panel" id="panel-messages">
+          <div class="section-top"><div><h2>编辑对话</h2><p>点击消息可修改，使用旁边的箭头调整顺序。</p></div><button class="button small light" id="batch-open" data-icon="list">批量录入</button></div>
+          <div class="conversation-title"><label for="title">聊天名称</label><input id="title" maxlength="64" placeholder="输入聊天名称"><span class="field-hint" data-icon="edit"></span></div>
+          <div class="conversation-time-card"><div class="conversation-time-heading"><h3 data-icon="clock">对话时间</h3><button class="text-button" id="insert-time" data-icon="plus">插入时间分隔</button></div><div class="two-cols"><label>对话日期<input id="chat-date" type="date" min="0001-01-01" max="9999-12-31"></label><label>对话时分<input id="chat-time" type="time" step="60" value="12:02"></label></div><label class="time-format-label">显示格式<select id="chat-time-format"><option value="date">年月日 + 时分</option><option value="month-day">月日 + 时分</option><option value="time">仅显示时分</option><option value="relative">今天 / 昨天 + 时分</option><option value="weekday">星期 + 时分</option><option value="custom">自定义文字</option></select></label><label class="time-custom-label" id="chat-time-custom-field" hidden>时间显示文字<input id="chat-time-custom" maxlength="120" placeholder="例如：昨天下午 3:20"></label><p class="time-display-preview" id="chat-time-preview"></p><p class="helper">修改这里会更新开头的时间。选中消息后可在它前面插入时间，每段时间都可单独修改。</p></div>
+          <div class="message-list" id="message-list"></div>
+          <div class="message-add-actions"><button class="add-message" id="add-message" data-icon="plus">添加一条消息</button><button class="add-message" id="add-chain" data-icon="list">添加接龙</button></div>
+          <div class="compose-box" id="compose-box">
+            <div class="compose-heading"><h3 id="compose-title">编辑消息</h3><button class="icon-button" id="close-compose" aria-label="收起消息编辑器" data-icon="x"></button></div>
+            <div class="two-cols"><label>发送人物<select id="sender"></select></label><label>消息类型<select id="message-type"><option value="text">文字消息</option><option value="chain">接龙消息</option><option value="image">图片消息</option><option value="voice">语音样式</option><option value="time">时间分隔</option><option value="system">系统提示</option><option value="transfer">转账样式</option><option value="redpacket">红包样式</option></select></label></div>
+            <label class="content-field" id="text-field"><span id="content-label">消息内容</span><textarea id="message-content" rows="3" placeholder="在这里输入消息，支持换行和 emoji"></textarea></label>
+            <div class="chain-tools" id="chain-tools" hidden><p class="helper">首行「#接龙」为蓝灰色，说明和名单均为普通黑色文字；支持直接粘贴完整接龙。</p><details id="chain-builder"><summary>从名单生成编号</summary><label>接龙说明<textarea id="chain-description" rows="2" placeholder="例如：周末活动报名（请填写姓名及备注）"></textarea></label><label>名单 · 每行一条<textarea id="chain-names" rows="5" placeholder="张三 已报名&#10;李四 已报名"></textarea></label><button class="button small light" id="generate-chain" data-icon="list">生成编号名单</button></details></div>
+            <div class="message-time-fields" id="message-time-fields" hidden><div class="two-cols"><label>此段日期<input id="message-date" type="date" min="0001-01-01" max="9999-12-31"></label><label>此段时分<input id="message-time" type="time" step="60"></label></div><label class="time-format-label">此段显示格式<select id="message-time-format"><option value="date">年月日 + 时分</option><option value="month-day">月日 + 时分</option><option value="time">仅显示时分</option><option value="relative">今天 / 昨天 + 时分</option><option value="weekday">星期 + 时分</option><option value="custom">自定义文字</option></select></label><label class="time-custom-label" id="message-time-custom-field" hidden>此段显示文字<input id="message-time-custom" maxlength="120" placeholder="例如：昨天下午 3:20"></label></div>
+            <div id="image-field" hidden><label class="upload-box" for="message-image" data-icon="image">选择一张图片<span>JPG、PNG、WebP · 最大 10 MB</span></label><input id="message-image" type="file" accept="image/*" hidden><p id="image-name" class="helper"></p></div>
+            <label id="duration-field" hidden>语音时长（秒）<input id="voice-duration" type="number" min="1" max="60" value="8"><span class="helper">只生成语音消息的视觉样式</span></label>
+            <label id="amount-field" hidden>转账金额（元）<input id="transfer-amount" type="number" min="0.01" max="999999" step="0.01" value="88.00"></label>
+            <div class="compose-footer"><span>修改后实时更新预览</span><button class="text-button danger" id="delete-message" data-icon="trash">删除消息</button></div>
+          </div>
+          <div class="editor-bottom"><span id="message-count">共 0 条消息</span><button class="text-button muted" id="clear-messages">清空对话</button></div>
+        </div>
+        <div class="tab-panel" id="panel-people" hidden>
+          <div class="section-top"><div><h2>对话中的人物</h2><p>上传头像、修改昵称，选择谁显示在右侧。</p></div></div>
+          <div class="avatar-pool-card"><div><strong>400 张混合照片头像</strong><p id="avatar-pool-status">人像 · 动物 · 风景 · 城市与生活</p></div><div class="avatar-pool-actions"><button class="button small light" id="open-avatar-library" data-icon="image">选头像</button><button class="button small light" id="refresh-avatars" data-icon="users">换一批不重复头像</button><a class="button small light" href="wechat-avatars-400.zip" download data-icon="download">下载全部</a></div><span class="helper">新增人物自动领取未用头像；删除人物、清空聊天后也不会自动重复使用。</span></div>
+          <div class="people-toolbar"><span id="people-count"></span><button class="text-button" id="bulk-people-open" data-icon="list">批量添加人物</button></div>
+          <div id="people-list"></div><button class="add-message" id="add-person" data-icon="plus">添加人物</button>
+          <div class="soft-note" data-icon="info">你上传的头像和聊天图片不会上传到服务器。内置照片随工具提供，已用记录保存在当前浏览器。<a href="avatars/CREDITS.txt" target="_blank" rel="noreferrer">图片来源</a></div>
+        </div>
+        <div class="tab-panel" id="panel-settings" hidden>
+          <div class="section-top"><div><h2>画面细节</h2><p>调整状态栏、气泡与导出画面。</p></div><button class="text-button muted" id="reset-style">恢复默认</button></div>
+          <div class="settings-group"><h3>顶部状态栏</h3>
+            <label>状态栏样式<select id="status-platform"><option value="android">安卓 · 应用通知图标</option><option value="ios">iOS · 简洁状态栏</option></select></label>
+            <div class="two-cols status-control-row"><label>状态栏时间<input id="status-time" maxlength="12" value="12:02"></label><label>电量 <span id="battery-value">87%</span><input id="battery" type="range" min="0" max="100" value="87"></label></div>
+            <div class="status-notification-title">应用通知图标 · 最多 4 个</div><div class="status-notification-options" id="status-notification-options"></div><p class="helper" id="status-notification-hint"></p>
+            <label class="switch-row"><span>Wi-Fi 已连接</span><input type="checkbox" id="wifi-enabled" checked></label>
+            <div class="two-cols status-control-row"><label>Wi-Fi 信号<select id="wifi-strength"><option value="1">弱</option><option value="2">中</option><option value="3" selected>强</option></select></label><label>移动网络<select id="network-type"><option value="5G">5G</option><option value="4G">4G</option><option value="LTE">LTE</option><option value="3G">3G</option><option value="none">不显示</option></select></label></div><p class="helper">关闭 Wi-Fi 时显示移动网络标识。</p>
+            <div class="two-cols status-control-row"><label>主卡信号<select id="signal-strength"><option value="4">4 格</option><option value="3">3 格</option><option value="2">2 格</option><option value="1">1 格</option><option value="0">无信号</option></select></label><label>副卡信号<select id="secondary-signal"><option value="4">4 格</option><option value="3">3 格</option><option value="2">2 格</option><option value="1">1 格</option><option value="0">无信号</option></select></label></div>
+            <label class="switch-row"><span>双 SIM 卡</span><input type="checkbox" id="dual-sim"></label><label class="switch-row"><span>显示电量百分比</span><input type="checkbox" id="battery-percent" checked></label>
+            <label class="switch-row"><span>显示状态栏</span><input type="checkbox" id="show-status" checked></label><label class="switch-row"><span>显示底部输入栏</span><input type="checkbox" id="show-bottom" checked></label>
+          </div>
+          <div class="settings-group"><h3>对话样式</h3><label class="switch-row"><span>群聊模式 <small>显示对方昵称与群人数</small></span><input type="checkbox" id="group-mode"></label><div class="color-row"><label>聊天背景<input type="color" id="bg-color" value="#ededed"></label><label>我的气泡<input type="color" id="self-color" value="#95ec69"></label><label>对方气泡<input type="color" id="other-color" value="#ffffff"></label></div><label>文字大小 <span id="font-value">16 px</span><input type="range" id="font-size" min="14" max="20" value="16"></label><label class="bubble-padding-label">气泡左右留白 <span id="padding-value">12 px</span><input type="range" id="bubble-padding" min="8" max="18" step="0.5" value="12"></label></div>
+          <div class="settings-group"><h3>图片尺寸</h3><label>画面模式<select id="frame-mode"><option value="phone">手机截图 · 375 × 812</option><option value="long">完整长图 · 自动适应内容</option></select></label><p class="helper">长对话建议使用完整长图，保证每一条消息都被导出。</p></div>
+          <div class="soft-note" data-icon="lock">对话会自动保存在当前浏览器。也可以保存 JSON 草稿，随时导入继续编辑。</div>
+        </div>
+      </section>
+      <aside class="preview-column">
+        <section class="preview-card card">
+          <div class="preview-heading"><span><i class="live-dot"></i> 实时预览</span><span class="preview-dimensions" id="preview-dimensions">1125 × 2436 px</span></div>
+          <div class="preview-stage"><div class="phone-shell"><div id="chat-preview" aria-label="微信聊天图片实时预览，点击消息可编辑"></div></div></div>
+          <p class="preview-hint" data-icon="pointer">点击预览里的消息，也可以直接编辑</p>
+          <div class="overflow-note" id="overflow-note" hidden>当前手机画面无法容纳全部消息。<button class="text-button" id="use-long">切换完整长图 →</button></div>
+        </section>
+        <section class="export-card card"><div class="export-heading"><div><h2>准备好了吗？</h2><p>按原生排版直接导出，无损 PNG。</p></div><span class="export-symbol" data-icon="image"></span></div><div class="export-controls"><label class="sr-only" for="export-scale">导出清晰度</label><select id="export-scale"><option value="6">超清 · 2250 px · 推荐</option><option value="3">高清 · 1125 px · 原站尺寸</option><option value="2">清晰 · 750 px</option><option value="1">轻量 · 375 px</option></select><button class="button primary" id="export-image" data-icon="download">导出 PNG</button></div><div class="export-foot"><span data-icon="check">无损 PNG</span><span data-icon="lock">浏览器本地生成</span></div></section>
+      </aside>
+    </div>
+    <footer class="page-footer"><span>对话工坊 <i> / </i> 让想法在对话中发生</span><a href="https://chat.laogao.xyz/?tool=chat" target="_blank" rel="noreferrer">样式参考 ↗</a></footer>
+  </main>
+  <dialog id="batch-dialog"><div class="dialog-heading"><div><h2>批量录入对话</h2><p>每行一条，人物名后加冒号；时间使用方括号。</p></div><button class="icon-button" id="batch-close" aria-label="关闭" data-icon="x"></button></div><textarea id="batch-text" rows="12" placeholder="[今天 12:02]&#10;小林：周末去看展吗？&#10;我：好呀，一起！&#10;小林：那我们下午两点见 😊"></textarea><p class="helper">支持中文或英文冒号；新出现的人名会自动添加。无人物名的行会接在上一条消息后。</p><div class="dialog-footer"><label class="check-label"><input type="checkbox" id="batch-replace">替换现有对话</label><button class="button primary" id="batch-apply">添加到对话</button></div></dialog>
+  <dialog id="confirm-dialog"><h2 id="confirm-title"></h2><p id="confirm-text"></p><div class="dialog-footer"><button class="button light" id="confirm-cancel">取消</button><button class="button primary" id="confirm-ok">确认</button></div></dialog>
+  <dialog id="avatar-dialog"><div class="dialog-heading"><div><h2>400 张头像库</h2><p>同一头像只分配一次；已使用的头像会标记。</p></div><button class="icon-button" id="avatar-close" aria-label="关闭头像库" data-icon="x"></button></div><div class="avatar-library-controls"><label>分配给<select id="avatar-person"></select></label><label class="check-label"><input type="checkbox" id="avatar-only-unused">只看未用头像</label></div><div class="avatar-library-grid" id="avatar-library-grid"></div><div class="avatar-library-paging"><button class="button small light" id="avatar-prev">上一页</button><span id="avatar-page-info"></span><button class="button small light" id="avatar-next">下一页</button></div><div class="avatar-library-foot"><span id="avatar-library-status"></span><button class="text-button muted" id="reset-avatar-usage">重置已用记录</button></div></dialog>
+  <dialog id="bulk-people-dialog"><div class="dialog-heading"><div><h2>批量添加群聊人物</h2><p>每行一个昵称，自动分配不重复头像。已有同名人物会跳过。</p></div><button class="icon-button" id="bulk-people-close" aria-label="关闭" data-icon="x"></button></div><textarea id="bulk-people-names" rows="10" placeholder="小林&#10;小陈&#10;阿文"></textarea><div class="dialog-footer"><span class="helper">每个群聊最多 400 个人物</span><button class="button primary" id="bulk-people-apply">添加并分配头像</button></div></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script src="vendor/html-to-image.js"></script>
+  <script src="avatar-pool.js?v=4"></script>
+  <script src="conversation-time.js?v=7"></script>
+  <script src="vendor/status-icons/artwork.js"></script>
+  <script src="status-bar.js?v=7"></script>
+  <script src="chain-message.js?v=7"></script>
+  <script src="renderer.js?v=8"></script>
+  <script src="app.js?v=7"></script>
+</body>
+</html>

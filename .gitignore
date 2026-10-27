@@ -1,0 +1,12 @@
+qa/results/
+/examples/
+node_modules/
+.DS_Store
+
+# Local hosting configuration, credentials, and user exports
+.openai/
+.env
+.env.*
+*.xlsx
+*.xls
+exports/

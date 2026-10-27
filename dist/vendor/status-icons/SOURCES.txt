@@ -1,0 +1,6 @@
+Wi-Fi: Google Material Symbols, Apache-2.0
+https://github.com/google/material-design-icons/tree/master/symbols/web/wifi/materialsymbolsoutlined
+Application silhouettes: Simple Icons
+https://github.com/simple-icons/simple-icons
+Original SVGs and license documents are retained in this directory.
+Mail and music silhouettes are independently drawn in status-bar.js.

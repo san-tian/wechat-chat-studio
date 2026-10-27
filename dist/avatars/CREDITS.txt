@@ -1,0 +1,13 @@
+400 个混合照片头像 / Mixed photo avatars
+
+照片来自 Lorem Picsum 的公开目录，摄影作品来源为 Unsplash。
+每张照片的摄影师、原图地址和校验值见 manifest.json。
+
+Unsplash License: https://unsplash.com/license
+Lorem Picsum: https://picsum.photos/
+
+Unsplash permits downloading, copying, modifying, distributing and using these
+images, including commercial use, subject to the Unsplash License. Do not sell
+the unmodified images or compile them to replicate a competing stock service.
+Photography credits are retained in manifest.json. No photographer endorses
+this tool. Pictures are used as generic visual placeholders.
